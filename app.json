@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "firstApp",
-    "slug": "firstApp",
+    "name": "GamaAppOne",
+    "slug": "GamaAppOne",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/logoGama.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#68de5a"
     },
     "updates": {
       "fallbackToCacheTimeout": 0

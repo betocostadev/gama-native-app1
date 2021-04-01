@@ -1,89 +1,150 @@
 import React, { useCallback, useState } from 'react'
-import { View, Text, TextInput, StyleSheet, Dimensions, Platform } from 'react-native'
-import { RectButton } from 'react-native-gesture-handler'
-
+import { RectButton, ScrollView } from 'react-native-gesture-handler'
 import LottieView from 'lottie-react-native'
+import {
+    View,
+    Text,
+    StyleSheet,
+    Dimensions,
+    Image,
+    Platform,
+    TextInput,
+    KeyboardAvoidingView
+} from 'react-native'
 
-import sendContact from '../services/index'
+import { sendContact } from '../service'
+import { useNavigation } from '@react-navigation/native'
 
-{/* <LottieView
-  source={require('../animation/mail.json')}
-  autoPlay
-  loop
-  /> */}
-export default function Contact() {
-  const [ isSendMessage, setIsSendMessage ] = useState(false)
-  const [ name, onChangeText ] = useState<string>()
-  const [ phone, onChangeNumber ] = useState<string>()
 
-  const handleSentData = () => {
-    const postData = {
-      name, phone
-    }
-    sendContact
-      .post('', postData)
-      .then(response => setIsSendMessage(true))
-  }
+interface IPostData{
+    name?: string;
+    email?: string;
+    phone?: string;
+}
 
-  return (
-    <View style={style.container}>
-      <Text>Contato</Text>
-      {
-        isSendMessage
-        ? (<View><Text>Is send Message</Text></View>)
-        : (
-          <View>
-            <Text>Name:</Text>
-            <TextInput
-              value={name}
-              style={style.input}
-              onChangeText={text => onChangeText(text)}
-              />
-            <Text>Telefone:</Text>
-            <TextInput
-              value={phone}
-              style={style.input}
-              onChangeText={text => onChangeNumber(text)}
-              />
-            </View>
-          )
-      }
-      <RectButton style={style.sendButton} onPress={handleSentData}>
-        <Text>Enviar e-mail</Text>
-      </RectButton>
-      <RectButton onPress={() => alert(Platform.OS)}>
-        <Text>Qual a plataforma?</Text>
-      </RectButton>
-    </View>
-  )
+
+
+
+export default function ContactScreen() {
+    const [isSendMessage, setIsSendMessage] = useState(false)
+    const [postData, setPostData] = useState<IPostData>({})
+
+    const navigation = useNavigation()
+
+    const handleSendInfo = useCallback(() => {
+
+        sendContact.post('', postData).then(
+            response => {
+                setIsSendMessage(true)
+            }
+        )
+    }, [postData]
+    )
+
+    return (
+        <ScrollView style={style.scroolViewContainer}>
+            <KeyboardAvoidingView
+                keyboardVerticalOffset={ 100 }
+                behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+                style={style.container}
+            >
+                {isSendMessage ? (
+                    <View style={style.container}>
+                        <LottieView
+                            source={require('../animation/lf30_editor_ij5vetkw.json')}
+                            style={style.animationContent}
+                            autoPlay
+                            loop
+                        />
+                        <RectButton style={style.sendButton} onPress={navigation.goBack}>
+                            <Text style={style.textSendButton}>Voltar</Text>
+                        </RectButton>
+                    </View>
+
+                ) : (
+
+                    <View >
+                        <View style={style.logoContainer}>
+                            <Image
+                                source={require('../img/logoGama.png')}
+                            />
+                        </View>
+                        <Text>Name: </Text>
+                        <TextInput
+                            style={style.input}
+                            value={postData?.name}
+                            onChangeText={text => setPostData({ ...postData, name: text })}
+                        />
+
+                        <Text>Email: </Text>
+                        <TextInput
+                            style={style.input}
+                            value={postData?.email}
+                            onChangeText={text => setPostData({ ...postData, email: text })}
+                        />
+
+                        <Text>Telefone: </Text>
+                        <TextInput
+                            style={style.input}
+                            value={postData?.phone}
+                            onChangeText={text => setPostData({ ...postData, phone: text })}
+                        />
+
+                        <RectButton style={style.sendButton} onPress={handleSendInfo}>
+                            <Text style={style.textSendButton}>Enviar email</Text>
+                        </RectButton>
+
+                    </View>
+                )}
+            </KeyboardAvoidingView>
+        </ScrollView>
+    )
 }
 
 const style = StyleSheet.create({
-  container: {
-    flex: 1,
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
-    justifyContent: 'center'
-  },
-  input: {
-    paddingHorizontal: 20,
-    height: 50,
-    width: Dimensions.get('screen').width - 60,
-    borderWidth: 1,
-    borderColor: '#9c8e8e',
-    borderRadius: 12,
-    marginVertical: 10
-  },
-  sendButton: {
-    marginTop: 40,
-    justifyContent: 'center',
-    alignContent: 'center',
-    backgroundColor: '#68de5a',
-    color: '#fff',
-    width: Dimensions.get('window').width - 100,
-    height: 48,
-    borderRadius: 22,
-    fontSize: 20,
-    marginRight: 6
-  }
+    container: {
+        flex: 1,
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    containerKeyBoard: {
+        marginBottom: 40
+    },
+    scroolViewContainer: {
+        flex: 1
+    },
+    animationContent: {
+        width: 300,
+        height: 300
+    },
+    logoContainer: {
+        alignItems: 'center',
+        marginBottom: 32
+    },
+    input: {
+        paddingHorizontal: 20,
+        height: 50,
+        width: Dimensions.get('window').width - 80,
+        borderWidth: 1,
+        borderColor: '#d0d0d0',
+        borderRadius: 12,
+        marginVertical: 10
+    },
+    sendButton: {
+        marginTop: 40,
+        backgroundColor: '#68de5a',
+        width: Dimensions.get('window').width - 65,
+        height: 40,
+        borderRadius: 22,
+        marginRight: 6,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    textSendButton: {
+        fontSize: 20,
+        color: '#fff',
+    }
+
 })

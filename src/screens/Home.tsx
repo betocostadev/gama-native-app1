@@ -1,65 +1,71 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, Animated, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { BorderlessButton } from 'react-native-gesture-handler'
-
+import React, { useEffect, useRef } from 'react'
+import { View, Text, StyleSheet, SafeAreaView, Animated, Image, Dimensions } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { RectButton } from 'react-native-gesture-handler'
-// import { SafeAreaView } from 'react-native-safe-area-context';
+
 
 export default function Home(){
     const navigation = useNavigation()
 
     const fade = useRef(new Animated.Value(0)).current
 
-    const fadeInAnimation = () => {
+    useEffect( () => {
         Animated.timing(
             fade,
             {
                 toValue: 1,
-                duration: 1500,
+                duration: 3000,
                 useNativeDriver: true
             }
         ).start()
-    }
+    }, [fade])
 
     function openNewScreen(screen: string){
         navigation.navigate(screen)
     }
 
-    // <Animated.View style={[style.fadeInStyle, {opacity: fade}] } >
-    // </Animated.View>
     return(
-        <SafeAreaView style={style.Container}>
+        <SafeAreaView style={style.container}>
+            <Animated.View style={[ style.fadeInStyle ,{ opacity: fade }]}>
+                <Image
+                    source={ require('../img/logoGama.png') }
+                />
+            </Animated.View>
             <View>
-                <RectButton onPress={() => alert('Tudo certo!')}>
-                    <Text style={style.TextContent}> Home </Text>
+                <RectButton onPress={ () => openNewScreen('home') }>
+                    <Text style={style.textContent}>Home</Text>
                 </RectButton>
-                <Image source={ require('../img/logoGama.png') }/>
-                <View>
-                <BorderlessButton
-                    onPress={ () => alert('Nice') }>
-                    <Text onPress={ () => openNewScreen('home')}> Home </Text>
-                </BorderlessButton>
-                    <Text onPress={ () => openNewScreen('details')}> Details </Text>
-                    <Text onPress={ fadeInAnimation }> Animation </Text>
-                </View>
+
+                <RectButton onPress={ () => openNewScreen('details') }>
+                    <Text style={style.textContent}>Detalhes</Text>
+                </RectButton>
+
             </View>
         </SafeAreaView>
     )
 }
 
 const style = StyleSheet.create({
-    Container: {
+    container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#808080'
+        backgroundColor: '#68de5a',
+        height: Dimensions.get('window').height
+
     },
-    TextContent: {
+    navigationContent: {
+        alignContent: 'center',
+        justifyContent: 'center',
+        textAlign: 'center'
+    },
+    textContent: {
         color: '#fff',
-        fontSize: 22
+        fontSize: 22,
+        textAlign: 'center'
     },
     fadeInStyle: {
-        flex: 1
+        flex: 1,
+        marginTop: Dimensions.get('window').height / 4
     }
 })

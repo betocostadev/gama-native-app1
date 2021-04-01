@@ -4,9 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Details from './screens/Details'
 import Home from './screens/Home'
-import Contact from './screens/Contact'
+import ContactScreen from './screens/Contact'
 
-import HeaderComponent from './components/Header'
+import HeaderComponents from './components/Header'
 
 const { Navigator, Screen } = createStackNavigator()
 export default function Route(){
@@ -18,21 +18,21 @@ export default function Route(){
             <Screen
                 name="home"
                 component={Home}
-                />
+            />
             <Screen
                 name="details"
                 component={Details}
                 options={{
                     headerShown: true,
-                    header: () => <HeaderComponent title="Details" showCancel={true} />
+                    header: () => <HeaderComponents title="Detalhes" showCancel={false} />
                 }}
             />
             <Screen
                 name="contact"
-                component={Contact}
+                component={ContactScreen}
                 options={{
                     headerShown: true,
-                    header: () => <HeaderComponent title="Contact" showCancel={true} />
+                    header: () => <HeaderComponents title="Detalhes" showCancel={true} />
                 }}
             />
             </Navigator>
